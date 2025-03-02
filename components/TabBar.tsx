@@ -31,7 +31,7 @@ export function TabBar({ state, descriptors, navigation }: BottomTabBarProps) {
                     animatedStyle,
                     {
                         position: 'absolute',
-                        backgroundColor: '#723FEB',
+                        backgroundColor: 'black',
                         borderRadius: 30,
                         height: dimensions.height - 15,
                         width: buttonWidth - 15,
@@ -52,7 +52,7 @@ export function TabBar({ state, descriptors, navigation }: BottomTabBarProps) {
 
                 const onPress = () => {
                     if (!isFocused) {
-                        tabPositionX.value = withSpring(buttonWidth * index + 5, {
+                        tabPositionX.value = withSpring(buttonWidth * index, {
                             damping: 15,
                             stiffness: 120,
                         });

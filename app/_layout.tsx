@@ -1,11 +1,14 @@
 import { Stack } from 'expo-router';
+import { ThemeProvider } from '@/components/ThemeContext';
 
 
 const StackLayout = () => {
     return (
-        <Stack>
-            <Stack.Screen name="(tabs)" options= {{ headerShown: false}} />
-        </Stack>
+        <ThemeProvider>
+            <Stack>
+                <Stack.Screen name="(tabs)" options= {{ headerShown: false}} />
+            </Stack>
+        </ThemeProvider>
     )
 }
 

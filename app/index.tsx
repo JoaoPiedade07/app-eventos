@@ -1,7 +1,13 @@
+import { ThemeProvider } from '@/components/ThemeContext';
 import { Redirect } from 'expo-router';
 
 const StartPage = () => {
-    return <Redirect href = "/home" />;
+    return (
+        <ThemeProvider>
+            <Redirect href = "/home" />;
+        </ThemeProvider>
+    )
+    
 };
 
 export default StartPage;

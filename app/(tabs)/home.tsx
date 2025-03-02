@@ -1,111 +1,170 @@
-import { StyleSheet, View, Text, TouchableOpacity, Modal} from 'react-native';
-import React from 'react';
-import { useState } from 'react';
+import { StyleSheet, View, Text, TouchableOpacity, Modal, Animated, Pressable } from 'react-native';
+import React, { useState, useRef } from 'react';
 import { Calendar, DateData } from 'react-native-calendars';
+import { useTheme } from '@/components/ThemeContext';
 
-
-
-const home = () => {
-
-    const [open, setOpen] = useState(false); //Open and close the calendar
+const Home = () => {
+    const { theme, toggleTheme } = useTheme();
+    const [open, setOpen] = useState(false); 
+    const switchAnim = useRef(new Animated.Value(theme === 'dark' ? 1 : 0)).current;
 
     function handleOpen() {
         setOpen(!open);
     }
-    
-    return (
-        <View style = { styles.container}>
-            <Text style = { styles.text }>Home Screen</Text>
 
-            <TouchableOpacity style={styles.button} onPress={handleOpen}>
-                <Text style={styles.buttonText}>Open Calendar</Text>
+    function handleToggleTheme() {
+        Animated.timing(switchAnim, {
+            toValue: theme === 'dark' ? 0 : 1,
+            duration: 300,
+            useNativeDriver: false,
+        }).start();
+        toggleTheme();
+    }
+
+    return (
+        <View style={[styles.container, theme === 'dark' ? styles.dark : styles.light]}>
+            <Text style={[styles.text, theme === 'dark' ? styles.textLight : styles.textDark]}>Home Screen</Text>
+
+            {/* Botão de abrir o calendário */}
+            <TouchableOpacity style={[styles.button, theme === 'dark' ? styles.buttonDark : styles.buttonLight]} onPress={handleOpen}>
+                <Text style={[styles.buttonText, theme === 'dark' ? styles.textLight : styles.textButtonLight]}>Abrir Calendário</Text>
             </TouchableOpacity>
 
-            <Modal
-                animationType='slide'
-                transparent={true}
-                visible={open}>
-                    <View style={styles.centerView}>
-                    <View style={styles.modalView}>
+            {/* Switch personalizado abaixo do botão */}
+            <View style={styles.themeSwitcher}>
+                <Pressable onPress={handleToggleTheme}>
+                    <View style={[styles.switchContainer, theme === 'dark' ? styles.switchDark : styles.switchLight]}>
+                        <Animated.View 
+                            style={[
+                                styles.switchCircle,
+                                {
+                                    left: switchAnim.interpolate({
+                                        inputRange: [0, 1],
+                                        outputRange: [4, 26], // Move o círculo entre essas posições
+                                    }),
+                                    backgroundColor: theme === 'dark' ? '#fff' : '#007bff',
+                                }
+                            ]}
+                        />
+                    </View>
+                </Pressable>
+            </View>
 
-                    <Calendar
-                        onDayPress={(day: DateData) => console.log('Selected day:', day)}
-                        markedDates={{ 
-                        '25-02-2025': {selected: true, marked: true, selectedColor: 'blue'},
-                        }}
+            {/* Modal do calendário */}
+            <Modal animationType='slide' transparent={true} visible={open}>
+                <View style={styles.centerView}>
+                    <View style={[styles.modalView, theme === 'dark' ? styles.dark : styles.light]}>
+                        <Calendar
+                            onDayPress={(day: DateData) => console.log('Selected day:', day)}
+                            markedDates={{
+                                '2025-02-25': { selected: true, marked: true, selectedColor: 'blue' },
+                            }}
+                            theme={{
+                                backgroundColor: theme === 'dark' ? '#222' : '#fff',
+                                calendarBackground: theme === 'dark' ? '#333' : '#fff',
+                                dayTextColor: theme === 'dark' ? '#fff' : '#000',
+                                textDisabledColor: theme === 'dark' ? '#555' : '#d9e1e8',
+                                monthTextColor: theme === 'dark' ? '#fff' : '#000',
+                            }}
                         />
 
-                    <TouchableOpacity style={styles.button} onPress={handleOpen}>
-                        <Text style={styles.buttonText}>Close Calendar</Text>
-                    </TouchableOpacity>
-
+                        <TouchableOpacity style={[styles.button, theme === 'dark' ? styles.buttonDark : styles.buttonLight]} onPress={handleOpen}>
+                            <Text style={[styles.buttonText, theme === 'dark' ? styles.textLight : styles.textButtonLight]}>Fechar Calendário</Text>
+                        </TouchableOpacity>
                     </View>
-                    </View>
-                </Modal>
+                </View>
+            </Modal>
         </View>
-
-        
     );
 };
 
 const styles = StyleSheet.create({
-    text: {
-        color: 'black',
-        fontSize: 16,
-    },
     container: {
-        flex: 1,  
-        alignItems: 'center', 
+        flex: 1,
+        alignItems: 'center',
         justifyContent: 'center',
+        padding: 20,
     },
-    item: {
-        padding: 15,
-        marginVertical: 5,
-        backgroundColor: '#ddd',
-        borderRadius: 5,
+    light: {
+        backgroundColor: '#fff',
     },
-    calendarContainer: {
-        padding: 10,
-        backgroundColor: 'white',
-        borderRadius: 10,
-        elevation: 3,
+    dark: {
+        backgroundColor: '#222',
+    },
+    text: {
+        fontSize: 16,
+        marginBottom: 20,
+    },
+    textLight: {
+        color: '#fff',
+    },
+    textDark: {
+        color: '#000',
+    },
+    textButtonLight: {
+        color: '#fff', // Garantindo que o texto do botão fique branco no modo claro
+    },
+    button: {
+        marginTop: 10,
+        height: 50,
+        width: 200,
+        borderRadius: 8,
+        paddingHorizontal: 20,
+        justifyContent: 'center',
+        alignItems: 'center',
+    },
+    buttonLight: {
+        backgroundColor: '#007bff',
+    },
+    buttonDark: {
+        backgroundColor: '#444',
+    },
+    buttonText: {
+        fontSize: 16,
+        fontWeight: 'bold',
     },
     centerView: {
         flex: 1,
         justifyContent: 'center',
         alignItems: 'center',
-        marginTop: 22,
     },
     modalView: {
         margin: 20,
-        backgroundColor: 'white',
         borderRadius: 20,
         width: '80%',
         padding: 35,
         alignItems: 'center',
         shadowColor: '#000',
-        shadowOffset: {
-          width: 0,
-          height: 2,
-        },
+        shadowOffset: { width: 0, height: 2 },
         shadowOpacity: 0.25,
         shadowRadius: 4,
         elevation: 5,
     },
-    button: {
-        marginTop: 10,
-        height: 50,
-        borderRadius: 8,
-        paddingHorizontal: 10,
-        backgroundColor: '#007bff',
-        justifyContent: 'center',
+    themeSwitcher: {
+        marginTop: 20, // Espaçamento abaixo do botão
+        flexDirection: 'row',
         alignItems: 'center',
+        gap: 10,
     },
-    buttonText: {
-          color: '#fff',
-          fontSize: 16,
-          fontWeight: 'bold',
+    switchContainer: {
+        width: 50,
+        height: 28,
+        borderRadius: 20,
+        justifyContent: 'center',
+        padding: 2,
     },
-})
+    switchLight: {
+        backgroundColor: '#ccc',
+    },
+    switchDark: {
+        backgroundColor: '#555',
+    },
+    switchCircle: {
+        width: 24,
+        height: 24,
+        borderRadius: 12,
+        position: 'absolute',
+    },
+});
 
-export default home;
+export default Home;
