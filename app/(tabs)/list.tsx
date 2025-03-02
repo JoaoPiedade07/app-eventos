@@ -32,7 +32,7 @@ const ListPage = () => {
         contentContainerStyle={{ paddingBottom: 70 }}
         renderItem = {({ item }) => (
           <View style={ styles.item }>
-            <Image source={ item.images } style={ styles.image } />
+            { /*<Image source={ item.images } style={ styles.image } /> */}
             <View style={ styles.row }>
                 <Text style={styles.text}>{item.nome}</Text>
                 <Text style={styles.text}>{item.participantes} <Feather name = 'user' size = { 16 }/></Text>
@@ -55,7 +55,7 @@ const styles = StyleSheet.create({
         marginTop: 8,
     },
     item: {
-        padding: 30,
+        padding: 20,
         marginVertical: 5,
         marginHorizontal: 5,
         backgroundColor: '#ddd',
