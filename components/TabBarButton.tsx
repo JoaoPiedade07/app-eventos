@@ -47,7 +47,7 @@ const TabBarButton = ( { onPress, onLongPress, isFocused, routeName, color, labe
                 <IconComponent color={isFocused ? '#FFF' : '#222'} />
             </Animated.View>
                                 
-            <Animated.Text style = {[{ color: isFocused ? '#673ab7' : '#222', fontSize: 14 }, animatedTextStyle]}>
+            <Animated.Text style = {[{ color: isFocused ? '#FFF' : '#222', fontSize: 14 }, animatedTextStyle]}>
                { label }
             </Animated.Text>
         </Pressable>
